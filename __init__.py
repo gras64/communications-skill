@@ -100,6 +100,10 @@ class Communications(MycroftSkill):
     def handle_communications(self, message):
         self.end_call()
 
+    def handle_incoming_call(self, message):
+        """Handle when someone's calling"""
+        pass
+
     def end_call(self):
         # Check that we are calling someone
         if self.calling:
