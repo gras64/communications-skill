@@ -25,6 +25,7 @@ from . import shippingHandling
 class Communications(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
+        self.calling = False
 
     def initialize(self):
         self.add_event('skill.communications.intercom.new',
@@ -71,7 +72,7 @@ class Communications(MycroftSkill):
         self.log.info("Done connecting to device")
 
     @intent_file_handler('broadcast.intercom.intent')
-    def handle_communications(self, message):
+    def handle_intercom(self, message):
         # Get the announcement
         announcement = message.data.get("announcement")
         while not announcement:
@@ -81,6 +82,41 @@ class Communications(MycroftSkill):
         # Time to send the message to all...
         self.send_intercom(announcement)
         self.speak_dialog('broadcasting.intercom')
+
+    @intent_file_handler('new.call.intent')
+    def handle_call(self, message):
+        """Handle calling between devices"""
+        # Get the device name
+        name = message.data.get("name")
+        while not name:
+            name = self.get_response("get.name")
+        # TODO: Search for name
+        # TODO: Say no if there is not a active device
+        # TODO: Contact activate device and start buzzing
+        # TODO: If declined say so
+        # TODO: Begin server and conntect to it, tell other device to connect to it and start call, set calling var to True
+
+    @intent_file_handler('end.call.intent')
+    def handle_communications(self, message):
+        self.end_call()
+
+    def end_call(self):
+        # Check that we are calling someone
+        if self.calling:
+            # TODO: Stop Murmur call
+            # TODO: stop server
+            # TODO: end nicely, set self.calling to False
+            # TODO: Don't say anything.
+            pass
+        else:
+            return
+
+    def stop(self):
+        if self.calling:
+            self.end_call()
+            return True
+        else:
+            return False
 
 
 def create_skill():
